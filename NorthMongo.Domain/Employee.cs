@@ -17,8 +17,8 @@ namespace NorthMongo.Domain
         public string FirstName { get; set; }
         public string Title { get; set; }
         public string TitleOfCourtesy { get; set; }
-        public Nullable<DateTime> BirthDate { get; set; }
-        public Nullable<DateTime> HireDate { get; set; }
+        public DateTime? BirthDate { get; set; }
+        public DateTime? HireDate { get; set; }
         public string Address { get; set; }
         public string City { get; set; }
         public string Region { get; set; }
@@ -28,7 +28,7 @@ namespace NorthMongo.Domain
         public string Extension { get; set; }
         public byte[] Photo { get; set; }
         public string Notes { get; set; }
-        public Nullable<int> ReportsTo { get; set; }
+        public int? ReportsTo { get; set; }
         public string PhotoPath { get; set; }
     
         public ICollection<Employee> Employees1 { get; set; }

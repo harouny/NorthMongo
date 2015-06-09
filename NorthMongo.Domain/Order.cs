@@ -12,12 +12,12 @@ namespace NorthMongo.Domain
     
         public int OrderId { get; set; }
         public string CustomerId { get; set; }
-        public Nullable<int> EmployeeId { get; set; }
-        public Nullable<DateTime> OrderDate { get; set; }
-        public Nullable<DateTime> RequiredDate { get; set; }
-        public Nullable<DateTime> ShippedDate { get; set; }
-        public Nullable<int> ShipVia { get; set; }
-        public Nullable<decimal> Freight { get; set; }
+        public int? EmployeeId { get; set; }
+        public DateTime? OrderDate { get; set; }
+        public DateTime? RequiredDate { get; set; }
+        public DateTime? ShippedDate { get; set; }
+        public int? ShipVia { get; set; }
+        public decimal? Freight { get; set; }
         public string ShipName { get; set; }
         public string ShipAddress { get; set; }
         public string ShipCity { get; set; }
