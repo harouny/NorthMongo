@@ -4,10 +4,10 @@ namespace NorthMongo.Domain
 {
     public class Supplier
     {
-        public Supplier()
-        {
-            Products = new HashSet<Product>();
-        }
+        //public Supplier()
+        //{
+        //    Products = new HashSet<Product>();
+        //}
     
         public int SupplierId { get; set; }
         public string CompanyName { get; set; }
@@ -22,6 +22,6 @@ namespace NorthMongo.Domain
         public string Fax { get; set; }
         public string HomePage { get; set; }
     
-        public ICollection<Product> Products { get; set; }
+        //public ICollection<Product> Products { get; set; }
     }
 }

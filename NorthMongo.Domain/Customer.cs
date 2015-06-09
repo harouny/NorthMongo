@@ -4,11 +4,11 @@ namespace NorthMongo.Domain
 {
     public class Customer
     {
-        public Customer()
-        {
-            Orders = new HashSet<Order>();
-            CustomerDemographics = new HashSet<CustomerDemographic>();
-        }
+        //public Customer()
+        //{
+        //    Orders = new HashSet<Order>();
+        //    CustomerDemographics = new HashSet<CustomerDemographic>();
+        //}
     
         public string CustomerId { get; set; }
         public string CompanyName { get; set; }
@@ -22,7 +22,7 @@ namespace NorthMongo.Domain
         public string Phone { get; set; }
         public string Fax { get; set; }
     
-        public ICollection<Order> Orders { get; set; }
-        public ICollection<CustomerDemographic> CustomerDemographics { get; set; }
+        //public ICollection<Order> Orders { get; set; }
+        //public ICollection<CustomerDemographic> CustomerDemographics { get; set; }
     }
 }
