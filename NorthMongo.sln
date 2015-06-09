@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NorthMongo.EF", "NorthMongo.EF\NorthMongo.EF.csproj", "{545FE22A-CBF3-4B22-8005-8FD235A1C2D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NorthMongo.Domain", "NorthMongo.Domain\NorthMongo.Domain.csproj", "{4DB16618-2C93-4C03-87A7-473C19564C17}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{545FE22A-CBF3-4B22-8005-8FD235A1C2D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{545FE22A-CBF3-4B22-8005-8FD235A1C2D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{545FE22A-CBF3-4B22-8005-8FD235A1C2D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{545FE22A-CBF3-4B22-8005-8FD235A1C2D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DB16618-2C93-4C03-87A7-473C19564C17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DB16618-2C93-4C03-87A7-473C19564C17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DB16618-2C93-4C03-87A7-473C19564C17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DB16618-2C93-4C03-87A7-473C19564C17}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
