@@ -1,0 +1,7 @@
+﻿Public facing shipping cart:
+	- Login as customer or employer
+	- List all products (product name, price, category, units per stock)
+	- When click on product move to Product Details (product name, price, category, units per stock, supplier, QuantityPerUnit, UnitsOnOrder)
+		- If customer: show add to cart link.
+		- If employee: show add order link.
+	-
