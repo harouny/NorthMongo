@@ -5,10 +5,10 @@ namespace NorthMongo.Domain
 {
     public class Order
     {
-        //public Order()
-        //{
-        //    OrderDetails = new HashSet<OrderDetail>();
-        //}
+        public Order()
+        {
+            OrderDetails = new List<OrderDetail>();
+        }
     
         public int OrderId { get; set; }
         public string CustomerId { get; set; }
@@ -24,10 +24,10 @@ namespace NorthMongo.Domain
         public string ShipRegion { get; set; }
         public string ShipPostalCode { get; set; }
         public string ShipCountry { get; set; }
-    
+        public IEnumerable<OrderDetail> OrderDetails { get; set; }
+        public Shipper Shipper { get; set; }
+
         //public virtual Customer Customer { get; set; }
         //public virtual Employee Employee { get; set; }
-        //public ICollection<OrderDetail> OrderDetails { get; set; }
-        //public virtual Shipper Shipper { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace NorthMongo.SQLToMongo
             foreach (var productEntity in entities.Products)
             {
                 var product = productMapper.Map(productEntity);
-                //TODO: save product to mongo
+                
             }
         }
     }

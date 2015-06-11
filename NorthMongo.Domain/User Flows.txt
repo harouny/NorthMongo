@@ -1,7 +1,19 @@
-﻿Shopping cart:
+﻿Products Listing:
 	- Login as customer or employee.
 	- List all products (product name, price, category, units per stock).
 	- When click on product move to Product Details (product name, price, category, units per stock, supplier, QuantityPerUnit, UnitsOnOrder).
 		- If customer: show add to cart link.
-		- If employee: show add order link.
-	-
+		- If employee: show create order link.
+
+Shopping cart and checkout:
+	- After customer click (add to cart), product is added to customer shopping cart.
+	- (shopping cart page) list all products in cart (product name, price) and the quantity.
+	- (checkout page) customer can submit an order for the selected products in shopping cart after filling shipping details.
+
+Direct orders:
+	- After employee click (create order), he is navigated to (create order)
+	- (create order page) employee fills customer details, shipping info and submit the order.
+
+Reports:
+	- Sales report.
+	- What's in stock report.
