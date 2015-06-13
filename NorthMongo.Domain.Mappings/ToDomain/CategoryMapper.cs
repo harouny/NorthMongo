@@ -9,7 +9,7 @@
                 CategoryId = source.CategoryID,
                 CategoryName = source.CategoryName,
                 Description = source.Description,
-                Picture = source.Picture
+                //Picture = source.Picture
             };
             return category;
         }

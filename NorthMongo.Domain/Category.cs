@@ -12,7 +12,8 @@ namespace NorthMongo.Domain
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
         public string Description { get; set; }
-        public byte[] Picture { get; set; }
+        //TODO: binary Picture shouldn't be copied to each product
+        //public byte[] Picture { get; set; }
     
         //public IEnumerable<Product> Products { get; set; }
     }
