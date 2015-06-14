@@ -1,6 +1,7 @@
 ﻿Products Listing:
 	- Login as customer or employee.
-	- List all products (product name, price, category, units per stock).
+	- (categories page) List all categories (category name, description, image), when click on a category, it moves to Products Page.
+	- (products page) List all products (product name, price, category, units per stock). Able to filter by Category (in a dropdown).
 	- When click on product move to Product Details (product name, price, category, units per stock, supplier, QuantityPerUnit, UnitsOnOrder).
 		- If customer: show add to cart link.
 		- If employee: show create order link.

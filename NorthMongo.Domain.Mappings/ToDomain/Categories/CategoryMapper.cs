@@ -1,4 +1,5 @@
-﻿namespace NorthMongo.Domain.Mappings.ToDomain
+﻿using NorthMongo.Domain.Categories;
+namespace NorthMongo.Domain.Mappings.ToDomain.Categories
 {
     public class CategoryMapper : IMapToNew<EF.Category, Category>
     {
@@ -9,7 +10,7 @@
                 CategoryId = source.CategoryID,
                 CategoryName = source.CategoryName,
                 Description = source.Description,
-                //Picture = source.Picture
+                Picture = source.Picture
             };
             return category;
         }

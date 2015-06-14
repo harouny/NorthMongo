@@ -41,8 +41,9 @@
   <ItemGroup>
     <Compile Include="IMapToNew.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ToDomain\CategoryMapper.cs" />
-    <Compile Include="ToDomain\ProductMapper.cs" />
+    <Compile Include="ToDomain\Categories\CategoryMapper.cs" />
+    <Compile Include="ToDomain\Products\CategoryMapper.cs" />
+    <Compile Include="ToDomain\Products\ProductMapper.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -1,4 +1,5 @@
-﻿namespace NorthMongo.Domain.Mappings.ToDomain
+﻿using NorthMongo.Domain.Products;
+namespace NorthMongo.Domain.Mappings.ToDomain.Products
 {
     public class ProductMapper : IMapToNew<EF.Product, Product>
     {

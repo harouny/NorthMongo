@@ -1,4 +1,4 @@
-namespace NorthMongo.Domain
+namespace NorthMongo.Domain.Products
 {
     public class Product
     {

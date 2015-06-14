@@ -1,18 +1,33 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
-using NorthMongo.Domain.Mappings.ToDomain;
+using NorthMongo.Domain.Mappings.ToDomain.Categories;
+using NorthMongo.Domain.Mappings.ToDomain.Products;
 using NorthMongo.EF;
+using Products = NorthMongo.Domain.Products;
+using Categories = NorthMongo.Domain.Categories;
 
 namespace NorthMongo.SQLToMongo
 {
     class Program
     {
+        private const string ProductsCollection = "Products";
+        private const string CategoriesCollection = "Categories";
+        
+        // ReSharper disable once UnusedParameter.Local
         static void Main(string[] args)
         {
             var task = MigrateSqlToMongo();
+            Console.WriteLine("Copying data from SQL to MongoDB");
+            while (task.IsCompleted != true)
+            {
+                Console.Write(".");
+                Thread.Sleep(100);
+            }
             Task.WaitAll(task);
         }
 
@@ -21,10 +36,14 @@ namespace NorthMongo.SQLToMongo
             var entities = new NorthwindEntities();
             var mongoClient = GetMongoClient();
             var mongoDatabase = GetMongoDatabase(mongoClient);
-            await mongoDatabase.DropCollectionAsync("Products");
-            var productsCollection = GetProductsCollection(mongoDatabase);
-            var productMapper = new ProductMapper();
             
+            //Cleanup before copy
+            await mongoDatabase.DropCollectionAsync(ProductsCollection);
+            await mongoDatabase.DropCollectionAsync(CategoriesCollection);
+
+            //Copy Products
+            var productsCollection = GetProductsCollection(mongoDatabase);
+            var productMapper = new ProductMapper();            
             var products = (await entities
                                   .Products.ToListAsync()
                                   .ConfigureAwait(false))
@@ -32,22 +51,38 @@ namespace NorthMongo.SQLToMongo
 
             await productsCollection.InsertManyAsync(products)
                 .ConfigureAwait(false);
+            
+            //Copy Categories
+            var categoriesCollection = GetCategoriesCollection(mongoDatabase);
+            var categoryMapper = new CategoryMapper();
+            var categories = (await entities
+                                 .Categories.ToListAsync()
+                                 .ConfigureAwait(false))
+               .Select(categoryEntity => categoryMapper.Map(categoryEntity));
+
+            await categoriesCollection.InsertManyAsync(categories)
+                .ConfigureAwait(false);
         }
 
 
-        public static MongoClient GetMongoClient()
+        private static MongoClient GetMongoClient()
         {
-            return new MongoClient("mongodb://localhost");
+            return new MongoClient(ConfigurationManager.ConnectionStrings["MongoDb"].ConnectionString);
         }
 
-        public static IMongoDatabase GetMongoDatabase(MongoClient mongoClient)
+        private static IMongoDatabase GetMongoDatabase(MongoClient mongoClient)
         {
-            return mongoClient.GetDatabase("Northwind");
+            return mongoClient.GetDatabase(ConfigurationManager.AppSettings["MongoDbName"]);
         }
 
-        public static IMongoCollection<Domain.Product> GetProductsCollection(IMongoDatabase mongoDatabase)
+        private static IMongoCollection<Products.Product> GetProductsCollection(IMongoDatabase mongoDatabase)
         {
-            return mongoDatabase.GetCollection<Domain.Product>("Products");
+            return mongoDatabase.GetCollection<Products.Product>(ProductsCollection);
+        }
+
+        private static IMongoCollection<Categories.Category> GetCategoriesCollection(IMongoDatabase mongoDatabase)
+        {
+            return mongoDatabase.GetCollection<Categories.Category>(CategoriesCollection);
         }
 
     }
