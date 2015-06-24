@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using NorthMongo.Domain.Mappings.ToDomain.Categories;
 using NorthMongo.Domain.Mappings.ToDomain.Products;
@@ -33,6 +34,8 @@ namespace NorthMongo.SQLToMongo
 
         public static async Task MigrateSqlToMongo()
         {
+            SetupConventions();
+
             var entities = new NorthwindEntities();
             var mongoClient = GetMongoClient();
             var mongoDatabase = GetMongoDatabase(mongoClient);
@@ -62,6 +65,16 @@ namespace NorthMongo.SQLToMongo
 
             await categoriesCollection.InsertManyAsync(categories)
                 .ConfigureAwait(false);
+        }
+
+
+        private static void SetupConventions()
+        {
+            ConventionRegistry.Register("camel case", 
+                new ConventionPack
+                {
+                    new CamelCaseElementNameConvention()
+                }, t => true);
         }
 
 
