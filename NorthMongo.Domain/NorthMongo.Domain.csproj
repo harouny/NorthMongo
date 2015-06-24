@@ -40,18 +40,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Categories\Category.cs" />
-    <Compile Include="Customer.cs" />
-    <Compile Include="CustomerDemographic.cs" />
-    <Compile Include="Employee.cs" />
-    <Compile Include="Order.cs" />
-    <Compile Include="Order_Detail.cs" />
+    <Compile Include="People\CustomerDemographic.cs" />
+    <Compile Include="People\Customer.cs" />
+    <Compile Include="People\Employee.cs" />
+    <Compile Include="Orders\Customer.cs" />
+    <Compile Include="Orders\Employee.cs" />
+    <Compile Include="Orders\Order.cs" />
+    <Compile Include="Orders\Order_Detail.cs" />
+    <Compile Include="Orders\Shipper.cs" />
     <Compile Include="Products\Product.cs" />
     <Compile Include="Products\Category.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Region.cs" />
-    <Compile Include="Shipper.cs" />
-    <Compile Include="Supplier.cs" />
-    <Compile Include="Territory.cs" />
+    <Compile Include="People\Region.cs" />
+    <Compile Include="Shippers\Shipper.cs" />
+    <Compile Include="Suppliers\Supplier.cs" />
+    <Compile Include="People\Territory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="User Flows.txt" />

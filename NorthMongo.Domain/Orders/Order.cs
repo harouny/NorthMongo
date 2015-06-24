@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace NorthMongo.Domain
+namespace NorthMongo.Domain.Orders
 {
     public class Order
     {
@@ -26,8 +26,7 @@ namespace NorthMongo.Domain
         public string ShipCountry { get; set; }
         public IEnumerable<OrderDetail> OrderDetails { get; set; }
         public Shipper Shipper { get; set; }
-
-        //public virtual Customer Customer { get; set; }
-        //public virtual Employee Employee { get; set; }
+        public virtual Customer Customer { get; set; }
+        public virtual Employee Employee { get; set; }
     }
 }

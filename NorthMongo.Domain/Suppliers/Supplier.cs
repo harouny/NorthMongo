@@ -1,14 +1,7 @@
-using System.Collections.Generic;
-
-namespace NorthMongo.Domain
+namespace NorthMongo.Domain.Suppliers
 {
     public class Supplier
     {
-        //public Supplier()
-        //{
-        //    Products = new HashSet<Product>();
-        //}
-    
         public int SupplierId { get; set; }
         public string CompanyName { get; set; }
         public string ContactName { get; set; }
@@ -21,7 +14,5 @@ namespace NorthMongo.Domain
         public string Phone { get; set; }
         public string Fax { get; set; }
         public string HomePage { get; set; }
-    
-        //public ICollection<Product> Products { get; set; }
     }
 }

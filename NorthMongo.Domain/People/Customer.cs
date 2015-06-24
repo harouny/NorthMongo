@@ -1,15 +1,14 @@
 using System.Collections.Generic;
 
-namespace NorthMongo.Domain
+namespace NorthMongo.Domain.People
 {
     public class Customer
     {
-        //public Customer()
-        //{
-        //    Orders = new HashSet<Order>();
-        //    CustomerDemographics = new HashSet<CustomerDemographic>();
-        //}
-    
+        public Customer()
+        {
+            CustomerDemographics = new List<CustomerDemographic>();
+        }
+
         public string CustomerId { get; set; }
         public string CompanyName { get; set; }
         public string ContactName { get; set; }
@@ -21,8 +20,6 @@ namespace NorthMongo.Domain
         public string Country { get; set; }
         public string Phone { get; set; }
         public string Fax { get; set; }
-    
-        //public ICollection<Order> Orders { get; set; }
-        //public ICollection<CustomerDemographic> CustomerDemographics { get; set; }
+        public IEnumerable<CustomerDemographic> CustomerDemographics { get; set; }
     }
 }

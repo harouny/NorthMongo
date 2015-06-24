@@ -1,4 +1,4 @@
-namespace NorthMongo.Domain
+namespace NorthMongo.Domain.Orders
 {
     public class OrderDetail
     {

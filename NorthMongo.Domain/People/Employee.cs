@@ -1,17 +1,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace NorthMongo.Domain
+namespace NorthMongo.Domain.People
 {
     public class Employee
     {
-        //public Employee()
-        //{
-        //    Employees1 = new HashSet<Employee>();
-        //    Orders = new HashSet<Order>();
-        //    Territories = new HashSet<Territory>();
-        //}
-    
+        public Employee()
+        {
+            Territories = new List<Territory>();
+        }
+
         public int EmployeeId { get; set; }
         public string LastName { get; set; }
         public string FirstName { get; set; }
@@ -30,10 +28,6 @@ namespace NorthMongo.Domain
         public string Notes { get; set; }
         public int? ReportsTo { get; set; }
         public string PhotoPath { get; set; }
-    
-        //public ICollection<Employee> Employees1 { get; set; }
-        //public virtual Employee Employee1 { get; set; }
-        //public ICollection<Order> Orders { get; set; }
-        //public ICollection<Territory> Territories { get; set; }
+        public IEnumerable<Territory> Territories { get; set; }
     }
 }
