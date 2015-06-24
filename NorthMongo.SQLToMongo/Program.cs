@@ -20,10 +20,10 @@ namespace NorthMongo.SQLToMongo
 {
     class Program
     {
-        private const string ProductsCollection = "Products";
-        private const string CategoriesCollection = "Categories";
-        private const string ShippersCollection = "Shippers";
-        private const string SuppliersCollection = "Suppliers";
+        private const string ProductsCollectionName = "Products";
+        private const string CategoriesCollectionName = "Categories";
+        private const string ShippersCollectionName = "Shippers";
+        private const string SuppliersCollectionName = "Suppliers";
         
         // ReSharper disable once UnusedParameter.Local
         static void Main(string[] args)
@@ -47,13 +47,13 @@ namespace NorthMongo.SQLToMongo
             var mongoDatabase = GetMongoDatabase(mongoClient);
             
             //Cleanup before copy
-            await mongoDatabase.DropCollectionAsync(ProductsCollection);
-            await mongoDatabase.DropCollectionAsync(CategoriesCollection);
-            await mongoDatabase.DropCollectionAsync(SuppliersCollection);
-            await mongoDatabase.DropCollectionAsync(ShippersCollection);
+            await mongoDatabase.DropCollectionAsync(ProductsCollectionName);
+            await mongoDatabase.DropCollectionAsync(CategoriesCollectionName);
+            await mongoDatabase.DropCollectionAsync(SuppliersCollectionName);
+            await mongoDatabase.DropCollectionAsync(ShippersCollectionName);
 
             //Copy Products
-            var productsCollection = GetProductsCollection(mongoDatabase);
+            var productsCollection = GetCollection<Products.Product>(mongoDatabase, ProductsCollectionName);
             var productMapper = new ProductMapper();            
             var products = (await entities
                                   .Products.ToListAsync()
@@ -65,7 +65,7 @@ namespace NorthMongo.SQLToMongo
             
 
             //Copy Categories
-            var categoriesCollection = GetCategoriesCollection(mongoDatabase);
+            var categoriesCollection = GetCollection<Categories.Category>(mongoDatabase, CategoriesCollectionName);
             var categoryMapper = new CategoryMapper();
             var categories = (await entities
                                  .Categories.ToListAsync()
@@ -77,7 +77,7 @@ namespace NorthMongo.SQLToMongo
 
 
             //Copy Suppliers
-            var suppliersCollection = GetSuppliersCollection(mongoDatabase);
+            var suppliersCollection = GetCollection<Suppliers.Supplier>(mongoDatabase, SuppliersCollectionName);
             var supplierMapper = new SupplierMapper();
             var suppliers = (await entities
                                 .Suppliers.ToListAsync()
@@ -87,7 +87,7 @@ namespace NorthMongo.SQLToMongo
 
 
             //Copy Shippers
-            var shippersCollection = GetShippersCollection(mongoDatabase);
+            var shippersCollection = GetCollection<Shippers.Shipper>(mongoDatabase, ShippersCollectionName);
             var shipperMapper = new ShipperMapper();
             var shippers = (await entities
                                 .Shippers.ToListAsync()
@@ -118,24 +118,10 @@ namespace NorthMongo.SQLToMongo
             return mongoClient.GetDatabase(ConfigurationManager.AppSettings["MongoDbName"]);
         }
 
-        private static IMongoCollection<Products.Product> GetProductsCollection(IMongoDatabase mongoDatabase)
+        private static IMongoCollection<T> GetCollection<T>(IMongoDatabase mongoDatabase, string collectionName)
         {
-            return mongoDatabase.GetCollection<Products.Product>(ProductsCollection);
+            return mongoDatabase.GetCollection<T>(collectionName);
         }
 
-        private static IMongoCollection<Categories.Category> GetCategoriesCollection(IMongoDatabase mongoDatabase)
-        {
-            return mongoDatabase.GetCollection<Categories.Category>(CategoriesCollection);
-        }
-
-        private static IMongoCollection<Shippers.Shipper> GetShippersCollection(IMongoDatabase mongoDatabase)
-        {
-            return mongoDatabase.GetCollection<Domain.Shippers.Shipper>(ShippersCollection);
-        }
-
-        private static IMongoCollection<Suppliers.Supplier> GetSuppliersCollection(IMongoDatabase mongoDatabase)
-        {
-            return mongoDatabase.GetCollection<Domain.Suppliers.Supplier>(SuppliersCollection);
-        }
     }
 }
