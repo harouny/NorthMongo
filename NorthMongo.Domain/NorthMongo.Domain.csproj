@@ -46,7 +46,7 @@
     <Compile Include="Orders\Customer.cs" />
     <Compile Include="Orders\Employee.cs" />
     <Compile Include="Orders\Order.cs" />
-    <Compile Include="Orders\Order_Detail.cs" />
+    <Compile Include="Orders\OrderDetail.cs" />
     <Compile Include="Orders\Shipper.cs" />
     <Compile Include="Products\Product.cs" />
     <Compile Include="Products\Category.cs" />
