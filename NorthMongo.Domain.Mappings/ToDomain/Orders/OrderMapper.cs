@@ -3,7 +3,7 @@ using NorthMongo.Domain.Orders;
 
 namespace NorthMongo.Domain.Mappings.ToDomain.Orders
 {
-    internal class OrderMapper : IMapToNew<EF.Order, Order>
+    public class OrderMapper : IMapToNew<EF.Order, Order>
     {
         public Order Map(EF.Order source)
         {

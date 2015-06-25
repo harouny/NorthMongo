@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using NorthMongo.Domain.Mappings.ToDomain.Categories;
+using NorthMongo.Domain.Mappings.ToDomain.Orders;
 using NorthMongo.Domain.Mappings.ToDomain.Products;
 using NorthMongo.Domain.Mappings.ToDomain.Shippers;
 using NorthMongo.Domain.Mappings.ToDomain.Suppliers;
@@ -15,6 +16,7 @@ using Products = NorthMongo.Domain.Products;
 using Categories = NorthMongo.Domain.Categories;
 using Shippers = NorthMongo.Domain.Shippers;
 using Suppliers = NorthMongo.Domain.Suppliers;
+using Orders = NorthMongo.Domain.Orders;
 
 namespace NorthMongo.SQLToMongo
 {
@@ -24,6 +26,7 @@ namespace NorthMongo.SQLToMongo
         private const string CategoriesCollectionName = "Categories";
         private const string ShippersCollectionName = "Shippers";
         private const string SuppliersCollectionName = "Suppliers";
+        private const string OrdersCollectionName = "Orders";
         
         // ReSharper disable once UnusedParameter.Local
         static void Main(string[] args)
@@ -51,6 +54,7 @@ namespace NorthMongo.SQLToMongo
             await mongoDatabase.DropCollectionAsync(CategoriesCollectionName);
             await mongoDatabase.DropCollectionAsync(SuppliersCollectionName);
             await mongoDatabase.DropCollectionAsync(ShippersCollectionName);
+            await mongoDatabase.DropCollectionAsync(OrdersCollectionName);
 
             //Copy Products
             var productsCollection = GetCollection<Products.Product>(mongoDatabase, ProductsCollectionName);
@@ -94,6 +98,16 @@ namespace NorthMongo.SQLToMongo
                                 .ConfigureAwait(false))
                 .Select(shipperEntity => shipperMapper.Map(shipperEntity));
             await shippersCollection.InsertManyAsync(shippers);
+
+
+            //Copy Orders
+            var ordersCollection = GetCollection<Orders.Order>(mongoDatabase, OrdersCollectionName);
+            var orderMapper = new OrderMapper();
+            var orders = (await entities
+                                .Orders.ToListAsync()
+                                .ConfigureAwait(false))
+                .Select(orderEntity => orderMapper.Map(orderEntity));
+            await ordersCollection.InsertManyAsync(orders);
 
         }
 
