@@ -5,6 +5,7 @@ namespace NorthMongo.Domain.Mappings.ToDomain.Categories
     {
         public Category Map(EF.Category source)
         {
+            if (source == null) return null;
             var category = new Category
             {
                 CategoryId = source.CategoryID,

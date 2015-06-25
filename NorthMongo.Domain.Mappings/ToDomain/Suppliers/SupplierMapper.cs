@@ -6,6 +6,7 @@ namespace NorthMongo.Domain.Mappings.ToDomain.Suppliers
     {
         public Domain.Suppliers.Supplier Map(Supplier source)
         {
+            if (source == null) return null;
             return new Domain.Suppliers.Supplier()
             {
                 City = source.City,

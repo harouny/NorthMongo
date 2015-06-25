@@ -5,6 +5,7 @@ namespace NorthMongo.Domain.Mappings.ToDomain.Products
     {
         public Product Map(EF.Product source)
         {
+            if (source == null) return null;
             var categoryMapper = new CategoryMapper();
             var product = new Product
             {
