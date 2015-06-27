@@ -5,7 +5,6 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using NorthMongo.Domain.Mappings.ToDomain.Categories;
@@ -15,12 +14,14 @@ using NorthMongo.Domain.Mappings.ToDomain.Products;
 using NorthMongo.Domain.Mappings.ToDomain.Shippers;
 using NorthMongo.Domain.Mappings.ToDomain.Suppliers;
 using NorthMongo.EF;
-using Products = NorthMongo.Domain.Products;
-using Categories = NorthMongo.Domain.Categories;
-using Shippers = NorthMongo.Domain.Shippers;
-using Suppliers = NorthMongo.Domain.Suppliers;
-using Orders = NorthMongo.Domain.Orders;
-using People = NorthMongo.Domain.People;
+using Category = NorthMongo.Domain.Categories.Category;
+using Customer = NorthMongo.Domain.People.Customer;
+using Employee = NorthMongo.Domain.People.Employee;
+using Order = NorthMongo.Domain.Orders.Order;
+using Product = NorthMongo.Domain.Products.Product;
+using Shipper = NorthMongo.Domain.Shippers.Shipper;
+using Supplier = NorthMongo.Domain.Suppliers.Supplier;
+using Territory = NorthMongo.Domain.People.Territory;
 
 namespace NorthMongo.SQLToMongo
 {
@@ -55,8 +56,6 @@ namespace NorthMongo.SQLToMongo
             var entities = new NorthwindEntities();
             var mongoClient = GetMongoClient();
             var mongoDatabase = GetMongoDatabase(mongoClient);
-            var emptyFilter = new BsonDocument();
-
             
             //Cleanup before copy
             await mongoDatabase.DropCollectionAsync(ProductsCollectionName);
@@ -69,121 +68,129 @@ namespace NorthMongo.SQLToMongo
             await mongoDatabase.DropCollectionAsync(CustomersCollection);
 
             //Copy Suppliers
-            var suppliersCollection = GetCollection<Suppliers.Supplier>(mongoDatabase, SuppliersCollectionName);
+            var suppliersCollection = GetCollection<Supplier>(mongoDatabase, SuppliersCollectionName);
             var supplierMapper = new SupplierMapper();
             var suppliers = (await entities
                                 .Suppliers.ToListAsync()
                                 .ConfigureAwait(false))
-                .Select(supplierEntity => supplierMapper.Map(supplierEntity));
-            await suppliersCollection.InsertManyAsync(suppliers);
-            var allSuppliersDocuments = (await suppliersCollection
-                           .Find(emptyFilter)
-                           .ToListAsync()
-                           .ConfigureAwait(false));
+                .Select(supplierEntity => supplierMapper.Map(supplierEntity))
+                .ToList();
+            foreach (var supplier in suppliers)
+            {
+                await suppliersCollection
+                    .InsertOneAsync(supplier)
+                    .ConfigureAwait(false);
+            }
 
 
             //Copy Shippers
-            var shippersCollection = GetCollection<Shippers.Shipper>(mongoDatabase, ShippersCollectionName);
+            var shippersCollection = GetCollection<Shipper>(mongoDatabase, ShippersCollectionName);
             var shipperMapper = new ShipperMapper();
             var shippers = (await entities
                                 .Shippers.ToListAsync()
                                 .ConfigureAwait(false))
-                .Select(shipperEntity => shipperMapper.Map(shipperEntity));
-            await shippersCollection.InsertManyAsync(shippers);
-            var allShippersDocuments = (await shippersCollection
-                            .Find(emptyFilter)
-                            .ToListAsync()
-                            .ConfigureAwait(false));
+                .Select(shipperEntity => shipperMapper.Map(shipperEntity))
+                .ToList();
+            foreach (var shipper in shippers)
+            {
+                await shippersCollection
+                    .InsertOneAsync(shipper)
+                    .ConfigureAwait(false);
+            }
 
 
 
             //Copy Territories
-            var territoryCollection = GetCollection<People.Territory>(mongoDatabase, TerritoriesCollection);
+            var territoryCollection = GetCollection<Territory>(mongoDatabase, TerritoriesCollection);
             var territoryMapper = new TerritoryMapper();
             var territories = (await entities
                                 .Territories.ToListAsync()
                                 .ConfigureAwait(false))
-                .Select(territoryEntity => territoryMapper.Map(territoryEntity));
-            await territoryCollection.InsertManyAsync(territories);
-            var allTerritoryDocuments = (await territoryCollection
-                                        .Find(emptyFilter)
-                                        .ToListAsync()
-                                        .ConfigureAwait(false));
+                .Select(territoryEntity => territoryMapper.Map(territoryEntity))
+                .ToList();
+            foreach (var territory in territories)
+            {
+                await territoryCollection
+                    .InsertOneAsync(territory)
+                    .ConfigureAwait(false);
+            }
 
 
             //Copy Employees
-            var employeeCollection = GetCollection<People.Employee>(mongoDatabase, EmployeesCollection);
+            var employeeCollection = GetCollection<Employee>(mongoDatabase, EmployeesCollection);
             var employeeMapper = new EmployeeMapper();
             var employees = (await entities
                                 .Employees.ToListAsync()
                                 .ConfigureAwait(false))
                 .Select(employeeEntity => employeeMapper.Map(employeeEntity))
                 .ToList();
-            SyncEmployeesEmbededIds(employees, allTerritoryDocuments);
-            await employeeCollection.InsertManyAsync(employees);
-            var allEmployeesDocuments = (await employeeCollection
-                                        .Find(emptyFilter)
-                                        .ToListAsync()
-                                        .ConfigureAwait(false));
+            SyncEmployeesEmbededIds(employees, territories);
+            foreach (var employee in employees)
+            {
+                await employeeCollection
+                    .InsertOneAsync(employee)
+                    .ConfigureAwait(false);
+            }
 
 
             //Copy Customers
-            var customersCollection = GetCollection<People.Customer>(mongoDatabase, CustomersCollection);
+            var customersCollection = GetCollection<Customer>(mongoDatabase, CustomersCollection);
             var customerMapper = new CustomerMapper();
             var customers = (await entities
                                 .Customers.ToListAsync()
                                 .ConfigureAwait(false))
-                .Select(customerEntity => customerMapper.Map(customerEntity));
-            await customersCollection.InsertManyAsync(customers);
-            var allCustomersDocuments = (await customersCollection
-                            .Find(emptyFilter)
-                            .ToListAsync()
-                            .ConfigureAwait(false));
+                .Select(customerEntity => customerMapper.Map(customerEntity))
+                .ToList();
+            foreach (var customer in customers)
+            {
+                await customersCollection
+                    .InsertOneAsync(customer)
+                    .ConfigureAwait(false);
+            }
             
 
             //Copy Categories
-            var categoriesCollection = GetCollection<Categories.Category>(mongoDatabase, CategoriesCollectionName);
+            var categoriesCollection = GetCollection<Category>(mongoDatabase, CategoriesCollectionName);
             var categoryMapper = new CategoryMapper();
             var categories = (await entities
                                  .Categories.ToListAsync()
                                  .ConfigureAwait(false))
-               .Select(categoryEntity => categoryMapper.Map(categoryEntity));
-
-            await categoriesCollection.InsertManyAsync(categories)
-                .ConfigureAwait(false);
-            var allCategoryDocuments = (await categoriesCollection
-                           .Find(emptyFilter)
-                           .ToListAsync()
-                           .ConfigureAwait(false));
-           
+               .Select(categoryEntity => categoryMapper.Map(categoryEntity))
+               .ToList();
+            foreach (var category in categories)
+            {
+                await categoriesCollection
+                    .InsertOneAsync(category)
+                    .ConfigureAwait(false);
+            }
             
             //Copy Products
-            var productsCollection = GetCollection<Products.Product>(mongoDatabase, ProductsCollectionName);
+            var productsCollection = GetCollection<Product>(mongoDatabase, ProductsCollectionName);
             var productMapper = new ProductMapper();
             var products = (await entities
                                   .Products.ToListAsync()
                                   .ConfigureAwait(false))
                 .Select(productEntity => productMapper.Map(productEntity))
                 .ToList();
-            SyncProductsEmbededIds(products, allSuppliersDocuments, allCategoryDocuments);
+            SyncProductsEmbededIds(products, suppliers, categories);
             await productsCollection.InsertManyAsync(products)
                 .ConfigureAwait(false);
 
 
             //Copy Orders
-            var ordersCollection = GetCollection<Orders.Order>(mongoDatabase, OrdersCollectionName);
+            var ordersCollection = GetCollection<Order>(mongoDatabase, OrdersCollectionName);
             var orderMapper = new OrderMapper();
             var orders = (await entities
                                 .Orders.ToListAsync()
                                 .ConfigureAwait(false))
                 .Select(orderEntity => orderMapper.Map(orderEntity))
                 .ToList();
-            SyncOrdersEmbededIds(orders, allShippersDocuments, allEmployeesDocuments, allCustomersDocuments);
+            SyncOrdersEmbededIds(orders, shippers, employees, customers);
             await ordersCollection.InsertManyAsync(orders);
 
         }
 
-        private static void SyncEmployeesEmbededIds(List<People.Employee> employees, List<People.Territory> allTerritoryDocuments)
+        private static void SyncEmployeesEmbededIds(List<Employee> employees, List<Territory> allTerritoryDocuments)
         {
             foreach (var employee in employees)
             {
@@ -195,7 +202,7 @@ namespace NorthMongo.SQLToMongo
             }
         }
 
-        private static void SyncOrdersEmbededIds(List<Orders.Order> orders, List<Shippers.Shipper> allShippersDocuments, List<People.Employee> allEmployeesDocuments, List<People.Customer> allCustomersDocuments)
+        private static void SyncOrdersEmbededIds(List<Order> orders, List<Shipper> allShippersDocuments, List<Employee> allEmployeesDocuments, List<Customer> allCustomersDocuments)
         {
             foreach (var order in orders)
             {
@@ -214,7 +221,7 @@ namespace NorthMongo.SQLToMongo
             }
         }
 
-        private static void SyncProductsEmbededIds(List<Products.Product> products, List<Suppliers.Supplier> allSuppliersDocuments, List<Categories.Category> allCategoryDocuments)
+        private static void SyncProductsEmbededIds(List<Product> products, List<Supplier> allSuppliersDocuments, List<Category> allCategoryDocuments)
         {
             foreach (var product in products)
             {
