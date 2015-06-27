@@ -29,7 +29,9 @@ namespace NorthMongo.Domain.Mappings.ToDomain.People
                 TitleOfCourtesy = source.PostalCode,
                 Region = source.Region,
                 ReportsTo = source.ReportsTo,
-                Territories = source.Territories.Select(obj => territoryMapper.Map(obj))
+                Territories = source.Territories
+                    .Select(obj => territoryMapper.Map(obj))
+                    .ToList()
             };
         }
     }

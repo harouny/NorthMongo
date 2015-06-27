@@ -22,7 +22,9 @@ namespace NorthMongo.Domain.Mappings.ToDomain.People
                 Phone = source.Phone,
                 PostalCode = source.PostalCode,
                 Fax = source.Fax,
-                CustomerDemographics = source.CustomerDemographics.Select(obj => customerDemgraphicsMapper.Map(obj))
+                CustomerDemographics = source.CustomerDemographics
+                .Select(obj => customerDemgraphicsMapper.Map(obj))
+                .ToList()
             };
         }
     }

@@ -55,6 +55,8 @@ namespace NorthMongo.SQLToMongo
             var entities = new NorthwindEntities();
             var mongoClient = GetMongoClient();
             var mongoDatabase = GetMongoDatabase(mongoClient);
+            var emptyFilter = new BsonDocument();
+
             
             //Cleanup before copy
             await mongoDatabase.DropCollectionAsync(ProductsCollectionName);
@@ -74,6 +76,10 @@ namespace NorthMongo.SQLToMongo
                                 .ConfigureAwait(false))
                 .Select(supplierEntity => supplierMapper.Map(supplierEntity));
             await suppliersCollection.InsertManyAsync(suppliers);
+            var allSuppliersDocuments = (await suppliersCollection
+                           .Find(emptyFilter)
+                           .ToListAsync()
+                           .ConfigureAwait(false));
 
 
             //Copy Shippers
@@ -84,6 +90,10 @@ namespace NorthMongo.SQLToMongo
                                 .ConfigureAwait(false))
                 .Select(shipperEntity => shipperMapper.Map(shipperEntity));
             await shippersCollection.InsertManyAsync(shippers);
+            var allShippersDocuments = (await shippersCollection
+                            .Find(emptyFilter)
+                            .ToListAsync()
+                            .ConfigureAwait(false));
 
 
 
@@ -95,6 +105,10 @@ namespace NorthMongo.SQLToMongo
                                 .ConfigureAwait(false))
                 .Select(territoryEntity => territoryMapper.Map(territoryEntity));
             await territoryCollection.InsertManyAsync(territories);
+            var allTerritoryDocuments = (await territoryCollection
+                                        .Find(emptyFilter)
+                                        .ToListAsync()
+                                        .ConfigureAwait(false));
 
 
             //Copy Employees
@@ -103,8 +117,14 @@ namespace NorthMongo.SQLToMongo
             var employees = (await entities
                                 .Employees.ToListAsync()
                                 .ConfigureAwait(false))
-                .Select(employeeEntity => employeeMapper.Map(employeeEntity));
+                .Select(employeeEntity => employeeMapper.Map(employeeEntity))
+                .ToList();
+            SyncEmployeesEmbededIds(employees, allTerritoryDocuments);
             await employeeCollection.InsertManyAsync(employees);
+            var allEmployeesDocuments = (await employeeCollection
+                                        .Find(emptyFilter)
+                                        .ToListAsync()
+                                        .ConfigureAwait(false));
 
 
             //Copy Customers
@@ -115,6 +135,10 @@ namespace NorthMongo.SQLToMongo
                                 .ConfigureAwait(false))
                 .Select(customerEntity => customerMapper.Map(customerEntity));
             await customersCollection.InsertManyAsync(customers);
+            var allCustomersDocuments = (await customersCollection
+                            .Find(emptyFilter)
+                            .ToListAsync()
+                            .ConfigureAwait(false));
             
 
             //Copy Categories
@@ -127,31 +151,21 @@ namespace NorthMongo.SQLToMongo
 
             await categoriesCollection.InsertManyAsync(categories)
                 .ConfigureAwait(false);
-
-            //Load embeded entities
-            var emptyFilter = new BsonDocument();
-            var allSuppliersDocuments = (await suppliersCollection
-                                       .Find(emptyFilter)
-                                       .ToListAsync()
-                                       .ConfigureAwait(false));
-            var allShippersDocuments = (await shippersCollection
-                                       .Find(emptyFilter)
-                                       .ToListAsync()
-                                       .ConfigureAwait(false));
             var allCategoryDocuments = (await categoriesCollection
-                                       .Find(emptyFilter)
-                                       .ToListAsync()
-                                       .ConfigureAwait(false));
+                           .Find(emptyFilter)
+                           .ToListAsync()
+                           .ConfigureAwait(false));
+           
             
-
             //Copy Products
             var productsCollection = GetCollection<Products.Product>(mongoDatabase, ProductsCollectionName);
             var productMapper = new ProductMapper();
             var products = (await entities
                                   .Products.ToListAsync()
                                   .ConfigureAwait(false))
-                .Select(productEntity => productMapper.Map(productEntity)).ToList();
-            await SyncProductsEmbededIds(products, allSuppliersDocuments, allCategoryDocuments);
+                .Select(productEntity => productMapper.Map(productEntity))
+                .ToList();
+            SyncProductsEmbededIds(products, allSuppliersDocuments, allCategoryDocuments);
             await productsCollection.InsertManyAsync(products)
                 .ConfigureAwait(false);
 
@@ -162,19 +176,59 @@ namespace NorthMongo.SQLToMongo
             var orders = (await entities
                                 .Orders.ToListAsync()
                                 .ConfigureAwait(false))
-                .Select(orderEntity => orderMapper.Map(orderEntity));
+                .Select(orderEntity => orderMapper.Map(orderEntity))
+                .ToList();
+            SyncOrdersEmbededIds(orders, allShippersDocuments, allEmployeesDocuments, allCustomersDocuments);
             await ordersCollection.InsertManyAsync(orders);
 
         }
 
-        private static async Task SyncProductsEmbededIds(List<Products.Product> products, List<Suppliers.Supplier> allSuppliersDocuments, List<Categories.Category> allCategoryDocuments)
+        private static void SyncEmployeesEmbededIds(List<People.Employee> employees, List<People.Territory> allTerritoryDocuments)
+        {
+            foreach (var employee in employees)
+            {
+                foreach (var territory in employee.Territories)
+                {
+                    territory.Id = allTerritoryDocuments
+                        .Single(obj => obj.TerritoryId == territory.TerritoryId).Id;
+                }
+            }
+        }
+
+        private static void SyncOrdersEmbededIds(List<Orders.Order> orders, List<Shippers.Shipper> allShippersDocuments, List<People.Employee> allEmployeesDocuments, List<People.Customer> allCustomersDocuments)
+        {
+            foreach (var order in orders)
+            {
+                order.Customer.Id = allCustomersDocuments
+                    .Single(obj => obj.CustomerId == order.CustomerId).Id;
+                if (order.EmployeeId.HasValue)
+                {
+                    order.Employee.Id = allEmployeesDocuments
+                        .Single(obj => obj.EmployeeId == order.EmployeeId).Id;
+                }
+                if (order.ShipVia.HasValue)
+                {
+                    order.Shipper.Id = allShippersDocuments
+                        .Single(obj => obj.ShipperId == order.ShipVia).Id;
+                }
+            }
+        }
+
+        private static void SyncProductsEmbededIds(List<Products.Product> products, List<Suppliers.Supplier> allSuppliersDocuments, List<Categories.Category> allCategoryDocuments)
         {
             foreach (var product in products)
             {
-                product.Category.Id = allCategoryDocuments
-                    .Single(obj => obj.CategoryId == product.CategoryId).Id;
-                product.Supplier.Id = allSuppliersDocuments
-                    .Single(obj => obj.SupplierId == product.SupplierId).Id;
+                if (product.CategoryId.HasValue)
+                {
+                    product.Category.Id = allCategoryDocuments
+                        .Single(obj => obj.CategoryId == product.CategoryId).Id;
+                }
+
+                if (product.SupplierId.HasValue)
+                {
+                    product.Supplier.Id = allSuppliersDocuments
+                        .Single(obj => obj.SupplierId == product.SupplierId).Id;
+                }
             }
         }
 
