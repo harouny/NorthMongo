@@ -9,7 +9,7 @@ namespace NorthMongo.Domain.Mappings.ToDomain.People
             if (source == null) return null;
             return new Region()
             {
-                RegionDescription = source.RegionDescription,
+                RegionDescription = source.RegionDescription.Trim(),
                 RegionId = source.RegionID
             };
         }

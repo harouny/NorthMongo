@@ -8,6 +8,7 @@ using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using NorthMongo.Domain.Mappings.ToDomain.Categories;
 using NorthMongo.Domain.Mappings.ToDomain.Orders;
+using NorthMongo.Domain.Mappings.ToDomain.People;
 using NorthMongo.Domain.Mappings.ToDomain.Products;
 using NorthMongo.Domain.Mappings.ToDomain.Shippers;
 using NorthMongo.Domain.Mappings.ToDomain.Suppliers;
@@ -17,6 +18,7 @@ using Categories = NorthMongo.Domain.Categories;
 using Shippers = NorthMongo.Domain.Shippers;
 using Suppliers = NorthMongo.Domain.Suppliers;
 using Orders = NorthMongo.Domain.Orders;
+using People = NorthMongo.Domain.People;
 
 namespace NorthMongo.SQLToMongo
 {
@@ -27,6 +29,9 @@ namespace NorthMongo.SQLToMongo
         private const string ShippersCollectionName = "Shippers";
         private const string SuppliersCollectionName = "Suppliers";
         private const string OrdersCollectionName = "Orders";
+        private const string TerritoriesCollection = "Territories";
+        private const string EmployeesCollection = "Employees";
+        private const string CustomersCollection = "Customers";
         
         // ReSharper disable once UnusedParameter.Local
         static void Main(string[] args)
@@ -55,7 +60,61 @@ namespace NorthMongo.SQLToMongo
             await mongoDatabase.DropCollectionAsync(SuppliersCollectionName);
             await mongoDatabase.DropCollectionAsync(ShippersCollectionName);
             await mongoDatabase.DropCollectionAsync(OrdersCollectionName);
+            await mongoDatabase.DropCollectionAsync(TerritoriesCollection);
+            await mongoDatabase.DropCollectionAsync(EmployeesCollection);
+            await mongoDatabase.DropCollectionAsync(CustomersCollection);
 
+            //Copy Suppliers
+            var suppliersCollection = GetCollection<Suppliers.Supplier>(mongoDatabase, SuppliersCollectionName);
+            var supplierMapper = new SupplierMapper();
+            var suppliers = (await entities
+                                .Suppliers.ToListAsync()
+                                .ConfigureAwait(false))
+                .Select(supplierEntity => supplierMapper.Map(supplierEntity));
+            await suppliersCollection.InsertManyAsync(suppliers);
+
+
+            //Copy Shippers
+            var shippersCollection = GetCollection<Shippers.Shipper>(mongoDatabase, ShippersCollectionName);
+            var shipperMapper = new ShipperMapper();
+            var shippers = (await entities
+                                .Shippers.ToListAsync()
+                                .ConfigureAwait(false))
+                .Select(shipperEntity => shipperMapper.Map(shipperEntity));
+            await shippersCollection.InsertManyAsync(shippers);
+
+
+
+            //Copy Territories
+            var territoryCollection = GetCollection<People.Territory>(mongoDatabase, TerritoriesCollection);
+            var territoryMapper = new TerritoryMapper();
+            var territories = (await entities
+                                .Territories.ToListAsync()
+                                .ConfigureAwait(false))
+                .Select(territoryEntity => territoryMapper.Map(territoryEntity));
+            await territoryCollection.InsertManyAsync(territories);
+
+
+            //Copy Employees
+            var employeeCollection = GetCollection<People.Employee>(mongoDatabase, EmployeesCollection);
+            var employeeMapper = new EmployeeMapper();
+            var employees = (await entities
+                                .Employees.ToListAsync()
+                                .ConfigureAwait(false))
+                .Select(employeeEntity => employeeMapper.Map(employeeEntity));
+            await employeeCollection.InsertManyAsync(employees);
+
+
+            //Copy Customers
+            var customersCollection = GetCollection<People.Customer>(mongoDatabase, CustomersCollection);
+            var customerMapper = new CustomerMapper();
+            var customers = (await entities
+                                .Customers.ToListAsync()
+                                .ConfigureAwait(false))
+                .Select(customerEntity => customerMapper.Map(customerEntity));
+            await customersCollection.InsertManyAsync(customers);
+
+            
             //Copy Products
             var productsCollection = GetCollection<Products.Product>(mongoDatabase, ProductsCollectionName);
             var productMapper = new ProductMapper();            
@@ -79,25 +138,6 @@ namespace NorthMongo.SQLToMongo
             await categoriesCollection.InsertManyAsync(categories)
                 .ConfigureAwait(false);
 
-
-            //Copy Suppliers
-            var suppliersCollection = GetCollection<Suppliers.Supplier>(mongoDatabase, SuppliersCollectionName);
-            var supplierMapper = new SupplierMapper();
-            var suppliers = (await entities
-                                .Suppliers.ToListAsync()
-                                .ConfigureAwait(false))
-                .Select(supplierEntity => supplierMapper.Map(supplierEntity));
-            await suppliersCollection.InsertManyAsync(suppliers);
-
-
-            //Copy Shippers
-            var shippersCollection = GetCollection<Shippers.Shipper>(mongoDatabase, ShippersCollectionName);
-            var shipperMapper = new ShipperMapper();
-            var shippers = (await entities
-                                .Shippers.ToListAsync()
-                                .ConfigureAwait(false))
-                .Select(shipperEntity => shipperMapper.Map(shipperEntity));
-            await shippersCollection.InsertManyAsync(shippers);
 
 
             //Copy Orders

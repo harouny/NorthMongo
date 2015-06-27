@@ -10,7 +10,7 @@ namespace NorthMongo.Domain.Mappings.ToDomain.People
             return new Territory
             {
                 RegionId = source.RegionID,
-                TerritoryDescription = source.TerritoryDescription,
+                TerritoryDescription = source.TerritoryDescription.Trim(),
                 TerritoryId = source.TerritoryID,
                 Region = new RegionMapper().Map(source.Region)
             };
