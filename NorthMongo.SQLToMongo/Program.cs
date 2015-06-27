@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using NorthMongo.Domain.Mappings.ToDomain.Categories;
@@ -113,18 +115,6 @@ namespace NorthMongo.SQLToMongo
                                 .ConfigureAwait(false))
                 .Select(customerEntity => customerMapper.Map(customerEntity));
             await customersCollection.InsertManyAsync(customers);
-
-            
-            //Copy Products
-            var productsCollection = GetCollection<Products.Product>(mongoDatabase, ProductsCollectionName);
-            var productMapper = new ProductMapper();            
-            var products = (await entities
-                                  .Products.ToListAsync()
-                                  .ConfigureAwait(false))
-                .Select(productEntity => productMapper.Map(productEntity));
-
-            await productsCollection.InsertManyAsync(products)
-                .ConfigureAwait(false);
             
 
             //Copy Categories
@@ -138,6 +128,32 @@ namespace NorthMongo.SQLToMongo
             await categoriesCollection.InsertManyAsync(categories)
                 .ConfigureAwait(false);
 
+            //Load embeded entities
+            var emptyFilter = new BsonDocument();
+            var allSuppliersDocuments = (await suppliersCollection
+                                       .Find(emptyFilter)
+                                       .ToListAsync()
+                                       .ConfigureAwait(false));
+            var allShippersDocuments = (await shippersCollection
+                                       .Find(emptyFilter)
+                                       .ToListAsync()
+                                       .ConfigureAwait(false));
+            var allCategoryDocuments = (await categoriesCollection
+                                       .Find(emptyFilter)
+                                       .ToListAsync()
+                                       .ConfigureAwait(false));
+            
+
+            //Copy Products
+            var productsCollection = GetCollection<Products.Product>(mongoDatabase, ProductsCollectionName);
+            var productMapper = new ProductMapper();
+            var products = (await entities
+                                  .Products.ToListAsync()
+                                  .ConfigureAwait(false))
+                .Select(productEntity => productMapper.Map(productEntity)).ToList();
+            await SyncProductsEmbededIds(products, allSuppliersDocuments, allCategoryDocuments);
+            await productsCollection.InsertManyAsync(products)
+                .ConfigureAwait(false);
 
 
             //Copy Orders
@@ -149,6 +165,17 @@ namespace NorthMongo.SQLToMongo
                 .Select(orderEntity => orderMapper.Map(orderEntity));
             await ordersCollection.InsertManyAsync(orders);
 
+        }
+
+        private static async Task SyncProductsEmbededIds(List<Products.Product> products, List<Suppliers.Supplier> allSuppliersDocuments, List<Categories.Category> allCategoryDocuments)
+        {
+            foreach (var product in products)
+            {
+                product.Category.Id = allCategoryDocuments
+                    .Single(obj => obj.CategoryId == product.CategoryId).Id;
+                product.Supplier.Id = allSuppliersDocuments
+                    .Single(obj => obj.SupplierId == product.SupplierId).Id;
+            }
         }
 
 
