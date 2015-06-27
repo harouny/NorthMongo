@@ -1,6 +1,6 @@
 namespace NorthMongo.Domain.Orders
 {
-    public class Employee
+    public class Employee : BaseEntity
     {
         public int EmployeeId { get; set; }
         public string LastName { get; set; }
