@@ -7,11 +7,12 @@ namespace NorthMongo.Domain.Mappings.ToDomain.People
         public Territory Map(EF.Territory source)
         {
             if (source == null) return null;
-            return new Territory()
+            return new Territory
             {
                 RegionId = source.RegionID,
                 TerritoryDescription = source.TerritoryDescription,
-                TerritoryId = source.TerritoryID
+                TerritoryId = source.TerritoryID,
+                Region = new RegionMapper().Map(source.Region)
             };
         }
     }

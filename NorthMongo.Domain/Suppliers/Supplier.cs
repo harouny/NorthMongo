@@ -1,6 +1,6 @@
 namespace NorthMongo.Domain.Suppliers
 {
-    public class Supplier
+    public class Supplier : BaseEntity
     {
         public int SupplierId { get; set; }
         public string CompanyName { get; set; }

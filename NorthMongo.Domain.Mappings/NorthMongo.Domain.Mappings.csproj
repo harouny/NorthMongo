@@ -54,6 +54,7 @@
     <Compile Include="ToDomain\People\CustomerMapper.cs" />
     <Compile Include="ToDomain\Products\CategoryMapper.cs" />
     <Compile Include="ToDomain\Products\ProductMapper.cs" />
+    <Compile Include="ToDomain\Products\SupplierMapper.cs" />
     <Compile Include="ToDomain\Shippers\ShipperMapper.cs" />
     <Compile Include="ToDomain\Suppliers\SupplierMapper.cs" />
   </ItemGroup>

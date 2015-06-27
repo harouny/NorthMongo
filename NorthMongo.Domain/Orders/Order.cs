@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace NorthMongo.Domain.Orders
 {
-    public class Order
+    public class Order : BaseEntity
     {
         public Order()
         {

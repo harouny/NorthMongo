@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace NorthMongo.Domain.People
 {
-    public class Employee
+    public class Employee : BaseEntity
     {
         public Employee()
         {

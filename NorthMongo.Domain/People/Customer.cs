@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace NorthMongo.Domain.People
 {
-    public class Customer
+    public class Customer : BaseEntity
     {
         public Customer()
         {

@@ -2,11 +2,16 @@
 
 namespace NorthMongo.Domain.Mappings.ToDomain.People
 {
-    public class CustomerDemographicMapper : IMapToNew<EF.CustomerDemographic, CustomerDemographic>
+    internal class CustomerDemographicMapper : IMapToNew<EF.CustomerDemographic, CustomerDemographic>
     {
         public CustomerDemographic Map(EF.CustomerDemographic source)
         {
-            throw new System.NotImplementedException();
+            if (source == null) return null;
+            return new CustomerDemographic()
+            {
+                CustomerDesc = source.CustomerDesc,
+                CustomerTypeId = source.CustomerTypeID
+            };
         }
     }
 }

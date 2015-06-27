@@ -7,6 +7,7 @@ namespace NorthMongo.Domain.Mappings.ToDomain.Products
         {
             if (source == null) return null;
             var categoryMapper = new CategoryMapper();
+            var supplierMapper = new SupplierMapper();
             var product = new Product
             {
                 ProductId = source.ProductID,
@@ -19,7 +20,8 @@ namespace NorthMongo.Domain.Mappings.ToDomain.Products
                 UnitPrice = source.UnitPrice,
                 UnitsInStock = source.UnitsInStock,
                 UnitsOnOrder = source.UnitsOnOrder,
-                Category = categoryMapper.Map(source.Category)
+                Category = categoryMapper.Map(source.Category),
+                Supplier = supplierMapper.Map(source.Supplier)
             };
             return product;
         }

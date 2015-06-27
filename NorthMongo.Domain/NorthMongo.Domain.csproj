@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MongoDB.Bson">
+      <HintPath>..\packages\MongoDB.Bson.2.0.1\lib\net45\MongoDB.Bson.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -39,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseEntity.cs" />
     <Compile Include="Categories\Category.cs" />
     <Compile Include="People\CustomerDemographic.cs" />
     <Compile Include="People\Customer.cs" />
@@ -50,6 +54,7 @@
     <Compile Include="Orders\Shipper.cs" />
     <Compile Include="Products\Product.cs" />
     <Compile Include="Products\Category.cs" />
+    <Compile Include="Products\Supplier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="People\Region.cs" />
     <Compile Include="Shippers\Shipper.cs" />
@@ -59,7 +64,9 @@
   <ItemGroup>
     <Content Include="User Flows.txt" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
