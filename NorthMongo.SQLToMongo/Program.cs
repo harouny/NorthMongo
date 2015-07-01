@@ -74,12 +74,10 @@ namespace NorthMongo.SQLToMongo
                                 .Suppliers.ToListAsync())
                 .Select(supplierEntity => supplierMapper.Map(supplierEntity))
                 .ToList();
-            foreach (var supplier in suppliers)
-            {
-                await suppliersCollection
-                    .InsertOneAsync(supplier);
-            }
-
+            
+            await Task.WhenAll(suppliers.Select(supplier => suppliersCollection
+                    .InsertOneAsync(supplier))
+                .ToArray());
 
             //Copy Shippers
             var shippersCollection = GetCollection<Shipper>(mongoDatabase, ShippersCollectionName);
@@ -88,11 +86,10 @@ namespace NorthMongo.SQLToMongo
                                 .Shippers.ToListAsync())
                 .Select(shipperEntity => shipperMapper.Map(shipperEntity))
                 .ToList();
-            foreach (var shipper in shippers)
-            {
-                await shippersCollection
-                    .InsertOneAsync(shipper);
-            }
+
+            await Task.WhenAll(shippers.Select(shipper => shippersCollection
+                    .InsertOneAsync(shipper))
+                .ToArray());
 
 
 
@@ -103,11 +100,10 @@ namespace NorthMongo.SQLToMongo
                                 .Territories.ToListAsync())
                 .Select(territoryEntity => territoryMapper.Map(territoryEntity))
                 .ToList();
-            foreach (var territory in territories)
-            {
-                await territoryCollection
-                    .InsertOneAsync(territory);
-            }
+
+            await Task.WhenAll(territories.Select(territory => territoryCollection
+                    .InsertOneAsync(territory))
+                .ToArray());
 
 
             //Copy Employees
@@ -118,12 +114,10 @@ namespace NorthMongo.SQLToMongo
                 .Select(employeeEntity => employeeMapper.Map(employeeEntity))
                 .ToList();
             SyncEmployeesEmbededIds(employees, territories);
-            foreach (var employee in employees)
-            {
-                await employeeCollection
-                    .InsertOneAsync(employee);
-            }
 
+            await Task.WhenAll(employees.Select(employee => employeeCollection
+                    .InsertOneAsync(employee))
+                .ToArray()); 
 
             //Copy Customers
             var customersCollection = GetCollection<Customer>(mongoDatabase, CustomersCollection);
@@ -132,11 +126,10 @@ namespace NorthMongo.SQLToMongo
                                 .Customers.ToListAsync())
                 .Select(customerEntity => customerMapper.Map(customerEntity))
                 .ToList();
-            foreach (var customer in customers)
-            {
-                await customersCollection
-                    .InsertOneAsync(customer);
-            }
+
+            await Task.WhenAll(customers.Select(customer => customersCollection
+                    .InsertOneAsync(customer))
+                .ToArray()); 
             
 
             //Copy Categories
@@ -146,11 +139,12 @@ namespace NorthMongo.SQLToMongo
                                  .Categories.ToListAsync())
                .Select(categoryEntity => categoryMapper.Map(categoryEntity))
                .ToList();
-            foreach (var category in categories)
-            {
-                await categoriesCollection
-                    .InsertOneAsync(category);
-            }
+
+            await Task.WhenAll(categories.Select(category => categoriesCollection
+                    .InsertOneAsync(category))
+                .ToArray()); 
+
+
             
             //Copy Products
             var productsCollection = GetCollection<Product>(mongoDatabase, ProductsCollectionName);
