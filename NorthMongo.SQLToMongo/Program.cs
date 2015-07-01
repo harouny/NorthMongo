@@ -71,15 +71,13 @@ namespace NorthMongo.SQLToMongo
             var suppliersCollection = GetCollection<Supplier>(mongoDatabase, SuppliersCollectionName);
             var supplierMapper = new SupplierMapper();
             var suppliers = (await entities
-                                .Suppliers.ToListAsync()
-                                .ConfigureAwait(false))
+                                .Suppliers.ToListAsync())
                 .Select(supplierEntity => supplierMapper.Map(supplierEntity))
                 .ToList();
             foreach (var supplier in suppliers)
             {
                 await suppliersCollection
-                    .InsertOneAsync(supplier)
-                    .ConfigureAwait(false);
+                    .InsertOneAsync(supplier);
             }
 
 
@@ -87,15 +85,13 @@ namespace NorthMongo.SQLToMongo
             var shippersCollection = GetCollection<Shipper>(mongoDatabase, ShippersCollectionName);
             var shipperMapper = new ShipperMapper();
             var shippers = (await entities
-                                .Shippers.ToListAsync()
-                                .ConfigureAwait(false))
+                                .Shippers.ToListAsync())
                 .Select(shipperEntity => shipperMapper.Map(shipperEntity))
                 .ToList();
             foreach (var shipper in shippers)
             {
                 await shippersCollection
-                    .InsertOneAsync(shipper)
-                    .ConfigureAwait(false);
+                    .InsertOneAsync(shipper);
             }
 
 
@@ -104,15 +100,13 @@ namespace NorthMongo.SQLToMongo
             var territoryCollection = GetCollection<Territory>(mongoDatabase, TerritoriesCollection);
             var territoryMapper = new TerritoryMapper();
             var territories = (await entities
-                                .Territories.ToListAsync()
-                                .ConfigureAwait(false))
+                                .Territories.ToListAsync())
                 .Select(territoryEntity => territoryMapper.Map(territoryEntity))
                 .ToList();
             foreach (var territory in territories)
             {
                 await territoryCollection
-                    .InsertOneAsync(territory)
-                    .ConfigureAwait(false);
+                    .InsertOneAsync(territory);
             }
 
 
@@ -120,16 +114,14 @@ namespace NorthMongo.SQLToMongo
             var employeeCollection = GetCollection<Employee>(mongoDatabase, EmployeesCollection);
             var employeeMapper = new EmployeeMapper();
             var employees = (await entities
-                                .Employees.ToListAsync()
-                                .ConfigureAwait(false))
+                                .Employees.ToListAsync())
                 .Select(employeeEntity => employeeMapper.Map(employeeEntity))
                 .ToList();
             SyncEmployeesEmbededIds(employees, territories);
             foreach (var employee in employees)
             {
                 await employeeCollection
-                    .InsertOneAsync(employee)
-                    .ConfigureAwait(false);
+                    .InsertOneAsync(employee);
             }
 
 
@@ -137,15 +129,13 @@ namespace NorthMongo.SQLToMongo
             var customersCollection = GetCollection<Customer>(mongoDatabase, CustomersCollection);
             var customerMapper = new CustomerMapper();
             var customers = (await entities
-                                .Customers.ToListAsync()
-                                .ConfigureAwait(false))
+                                .Customers.ToListAsync())
                 .Select(customerEntity => customerMapper.Map(customerEntity))
                 .ToList();
             foreach (var customer in customers)
             {
                 await customersCollection
-                    .InsertOneAsync(customer)
-                    .ConfigureAwait(false);
+                    .InsertOneAsync(customer);
             }
             
 
@@ -153,36 +143,31 @@ namespace NorthMongo.SQLToMongo
             var categoriesCollection = GetCollection<Category>(mongoDatabase, CategoriesCollectionName);
             var categoryMapper = new CategoryMapper();
             var categories = (await entities
-                                 .Categories.ToListAsync()
-                                 .ConfigureAwait(false))
+                                 .Categories.ToListAsync())
                .Select(categoryEntity => categoryMapper.Map(categoryEntity))
                .ToList();
             foreach (var category in categories)
             {
                 await categoriesCollection
-                    .InsertOneAsync(category)
-                    .ConfigureAwait(false);
+                    .InsertOneAsync(category);
             }
             
             //Copy Products
             var productsCollection = GetCollection<Product>(mongoDatabase, ProductsCollectionName);
             var productMapper = new ProductMapper();
             var products = (await entities
-                                  .Products.ToListAsync()
-                                  .ConfigureAwait(false))
+                                  .Products.ToListAsync())
                 .Select(productEntity => productMapper.Map(productEntity))
                 .ToList();
             SyncProductsEmbededIds(products, suppliers, categories);
-            await productsCollection.InsertManyAsync(products)
-                .ConfigureAwait(false);
+            await productsCollection.InsertManyAsync(products);
 
 
             //Copy Orders
             var ordersCollection = GetCollection<Order>(mongoDatabase, OrdersCollectionName);
             var orderMapper = new OrderMapper();
             var orders = (await entities
-                                .Orders.ToListAsync()
-                                .ConfigureAwait(false))
+                                .Orders.ToListAsync())
                 .Select(orderEntity => orderMapper.Map(orderEntity))
                 .ToList();
             SyncOrdersEmbededIds(orders, shippers, employees, customers);
